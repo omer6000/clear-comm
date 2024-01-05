@@ -18,11 +18,10 @@ pub(super) async fn decode(
     let mut data = vec![];
     while let Some(res1) = stream.next().await {
         if let Some(res2) = stream.next().await {
-            let repair = repair_msg(res1,res2);
-            data.push(repair);
+            data.push((res1,res2));
         }
     }
-    let output = async_std::stream::from_iter(data);
+    let output = async_std::stream::from_iter(data).map(|(a, b)| repair_msg(a, b));
     Ok(output)
 }
 
